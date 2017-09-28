@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include <string.h>
 #include <time.h>
 #include "config.h"
@@ -6,6 +8,20 @@
 #include "engine_queue.h"
 #include "engine_message.h"
 
+
+static const int thread_num = 4;
+
+int thread_func(int id) {
+    std::cout << "thread: " << id  << " begin run..." << std::endl;
+    for ( ; ; ) {
+        //engine_message msg;
+        //q.pop(msg);
+        //msg.dump_message();
+        std::chrono::milliseconds dura(1000);
+        std::this_thread::sleep_for(dura);
+    }
+    return 0;
+}
 
 static int engine_time(lua_State *L) {
     time_t now;
@@ -21,8 +37,7 @@ int main(int argc, char** argv)
     {
         if (strcmp(argv[1], "-version") == 0) 
         {
-            std::cout << "server engine marjon run: " 
-                << argv[0] << " version: "
+            std::cout << "server engine version: " 
                 << " major:" << ENGINE_VERSION_MAJOR
                 << " minor:" << ENGINE_VERSION_MINOR
                 << std::endl;
@@ -44,6 +59,18 @@ int main(int argc, char** argv)
     luaL_dostring(state, "print(\"hello world!\")");
     lua_register(state, "engine_time", engine_time);
     luaL_dostring(state, "print(engine_time())");
+
+    unsigned int ncore = std::thread::hardware_concurrency();
+    std::cout << ncore << " concurrent threads are supported." << std::endl;
+    std::thread thread_pool[thread_num];
+    for (auto i = 0; i < thread_num; i++) {
+        thread_pool[i] = std::thread(thread_func, i);
+    }
+
+    std::cout << "launched threads from main thread." << std::endl;
+    for (auto i = 0; i < thread_num; i++) {
+        thread_pool[i].join();
+    }
 
     lua_close(state);
 

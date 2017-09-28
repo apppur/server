@@ -38,7 +38,7 @@ add_dependencies(lua build_lua)
 aux_source_directory(./engine/src engine_src)
 add_executable(engine ${engine_src})
 
-target_link_libraries(engine liblua.a dl)
+target_link_libraries(engine liblua.a dl pthread)
 
 enable_testing()
 add_test(test_run engine)
