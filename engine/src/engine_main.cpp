@@ -31,6 +31,19 @@ static int engine_time(lua_State *L) {
     return 1;
 }
 
+static int _cb(lua_State *L) {
+    lua_rawgetp(L, LUA_REGISTRYINDEX, (const void*)_cb);
+    lua_call(L, 0, 0);
+
+    return 0;
+}
+
+static int callback(lua_State *L) {
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    lua_rawsetp(L, LUA_REGISTRYINDEX, (const void*)_cb);
+    return 0;
+}
+
 int main(int argc, char** argv)
 {
     if (argc == 2)
@@ -59,6 +72,13 @@ int main(int argc, char** argv)
     luaL_dostring(state, "print(\"hello world!\")");
     lua_register(state, "engine_time", engine_time);
     luaL_dostring(state, "print(engine_time())");
+    lua_register(state, "engine_register", callback);
+    /* test callback */
+    int result = luaL_loadfile(state, "../script/hello.lua");
+    if (result == 0) {
+        lua_pcall(state, 0, 0, 0);
+        _cb(state);
+    }
 
     unsigned int ncore = std::thread::hardware_concurrency();
     std::cout << ncore << " concurrent threads are supported." << std::endl;
