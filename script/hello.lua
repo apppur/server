@@ -8,6 +8,9 @@ function hello()
       end
   end
   fabi(20)
+  t = {2, 3, 8, 9, 4, 5}
+  table.sort(t)
+  print(table.unpack(t))
 end
 
 print("we will register callback.")

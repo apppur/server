@@ -17,7 +17,8 @@ int thread_func(int id) {
         //engine_message msg;
         //q.pop(msg);
         //msg.dump_message();
-        std::chrono::milliseconds dura(1000);
+        std::cout << "thread: " << id << " TICK!" << std::endl;
+        std::chrono::milliseconds dura(1000 * (id + 1));
         std::this_thread::sleep_for(dura);
     }
     return 0;
