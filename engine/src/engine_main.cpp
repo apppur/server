@@ -75,7 +75,7 @@ int main(int argc, char** argv)
     luaL_dostring(state, "print(engine_time())");
     lua_register(state, "engine_register", callback);
     /* test callback */
-    int result = luaL_loadfile(state, "../script/hello.lua");
+    int result = luaL_loadfile(state, "./script/hello.lua");
     if (result == 0) {
         lua_pcall(state, 0, 0, 0);
         _cb(state);

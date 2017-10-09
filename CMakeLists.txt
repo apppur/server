@@ -2,15 +2,18 @@ cmake_minimum_required (VERSION 2.6)
 
 # debug or release
 set(CMAKE_BUILD_TYPE "Debug")
-set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -std=gnu++11 -O0 -Wall -g -ggdb ")
-set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -std=gnu++11 -O3 -Wall ")
+#set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -std=gnu++11 -O0 -Wall -g -ggdb ")
+#set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -std=gnu++11 -O3 -Wall ")
+set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -std=c++11 -O0 -Wall -g -ggdb ")
+set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -std=c++11 -O3 -Wall ")
 
 project (engine)
 
 set(ENGINE_VERSION_MAJOR 1)
 set(ENGINE_VERSION_MINOR 0)
 
-set(CMAKE_BINARY_DIR ${PROJECT_SOURCE_DIR}/bin)
+#set(CMAKE_BINARY_DIR ${PROJECT_SOURCE_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
 
 configure_file(
   "${PROJECT_SOURCE_DIR}/config.h.in"
@@ -36,9 +39,9 @@ add_dependencies(lua build_lua)
 #  ./engine/src/engine_message.cpp
 #)
 aux_source_directory(./engine/src engine_src)
-add_executable(engine ${engine_src})
+add_executable(Engine ${engine_src})
 
-target_link_libraries(engine liblua.a dl pthread)
+target_link_libraries(Engine liblua.a dl pthread)
 
 enable_testing()
 add_test(test_run engine)
