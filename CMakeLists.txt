@@ -1,11 +1,19 @@
 cmake_minimum_required (VERSION 2.6)
 
+set(CMAKE_C_COMPILER /usr/bin/gcc)
+set(CMAKE_CXX_COMPILER /usr/bin/g++)
 # debug or release
 set(CMAKE_BUILD_TYPE "Debug")
 #set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -std=gnu++11 -O0 -Wall -g -ggdb ")
 #set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -std=gnu++11 -O3 -Wall ")
-set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -std=c++11 -O0 -Wall -g -ggdb ")
-set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -std=c++11 -O3 -Wall ")
+set(CMAKE_CXX_FLAGS "-std=c++11")
+set(CMAKE_CXX_FLAGS "-g")
+set(CMAKE_CXX_FLAGS "-Wall")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+
+add_compile_options(-std=c++11)
+#MESSAGE (${CMAKE_CXX_FLAGS_DEBUG})
 
 project (engine)
 
