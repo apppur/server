@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <vector>
 #include <string.h>
 #include <time.h>
 #include "config.h"
@@ -10,6 +11,7 @@
 
 
 static const int thread_num = 4;
+std::vector<int> timer_callback_ids;
 
 int thread_func(int id) {
     std::cout << "thread: " << id  << " begin run..." << std::endl;
@@ -45,6 +47,34 @@ static int callback(lua_State *L) {
     return 0;
 }
 
+static int timer_callback_register(lua_State *L) {
+    static auto callback_uuid = 0;
+    callback_uuid++;
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    lua_getglobal(L, "_timer_callback_table");
+    lua_insert(L, 1);
+    lua_rawseti(L, 1, callback_uuid);
+    timer_callback_ids.push_back(callback_uuid);
+    return 0;
+}
+
+static int create_timer_callback_table(lua_State *L) {
+    lua_newtable(L);
+    lua_setglobal(L, "_timer_callback_table");
+    return 0;
+}
+
+static int timer_callback(lua_State *L) {
+    lua_getglobal(L, "_timer_callback_table");
+    for (auto id : timer_callback_ids) {
+        lua_pushinteger(L, id);
+        lua_gettable(L, 1);
+        lua_call(L, 0, 0);
+    }
+    lua_pop(L, 1);
+    return 0;
+}
+
 int main(int argc, char** argv)
 {
     if (argc == 2)
@@ -70,10 +100,13 @@ int main(int argc, char** argv)
 
     lua_State *state = luaL_newstate();
     luaL_openlibs(state);
+    create_timer_callback_table(state);
     luaL_dostring(state, "print(\"hello world!\")");
     lua_register(state, "engine_time", engine_time);
     luaL_dostring(state, "print(engine_time())");
     lua_register(state, "engine_register", callback);
+    lua_register(state, "engine_timer", timer_callback_register);
+    lua_register(state, "engine_timer_callback", timer_callback);
     /* test callback */
     int result = luaL_loadfile(state, "./script/hello.lua");
     if (result == 0) {

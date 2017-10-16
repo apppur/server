@@ -13,6 +13,19 @@ function hello()
   print(table.unpack(t))
 end
 
+function ping()
+  print("ping ping ping...")
+end
+
+function pong()
+  print("pong pong pong...")
+end
+
+engine_timer(ping)
+engine_timer(pong)
+engine_timer_callback();
+engine_timer_callback();
+
 print("we will register callback.")
 
 --[[
