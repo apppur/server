@@ -8,6 +8,7 @@
 #include "lua.hpp"
 #include "engine_queue.h"
 #include "engine_message.h"
+#include "engine_timer.h"
 
 
 static const int thread_num = 4;
@@ -88,7 +89,8 @@ int main(int argc, char** argv)
             return 0;
         }
     }
-    std::cout << "engine start..." << std::endl;
+    engine_timer timer;
+    std::cout << "engine start...timer:" << timer.milliseconds() << std::endl;
 
     engine_queue<engine_message> msg_queue;
     engine_message msg;
